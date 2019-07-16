@@ -9,8 +9,6 @@
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
-    <!--jQuery-->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
 <header>
@@ -19,20 +17,34 @@
             <ul class="uk-navbar-nav">
                 <li class="uk-active"><a href="/">TOP</a></li>
                 <li>
-                    <a href="#">契約中の依頼</a>
+                    <a href="#">自分の依頼</a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
-                            <li class="uk-active"><a href="#">Item</a></li>
+                            @foreach($my_jobs as $my_job)
+                            <li class="uk-active"><a href="/job/{{$my_job->id}}/{{$my_job->user_id}}">{{$my_job->title}}</a></li>
+                            @endforeach
+                            <li class="uk-active"><a href="/jobRequest">依頼の投稿</a></li>
                         </ul>
                     </div>
                 </li>
-                <li><a href="/profile">Profile</a></li>
+                <li>
+                    <a href="#">契約中の依頼</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            @foreach($subscribes as $subscribe)
+                            <li><a href="/job/{{$subscribe->job_id}}/{{$subscribe->job->user_id}}">{{$subscribe->job->title}}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="/profile/{{$user_id}}">Profile</a></li>
             </ul>
         </div>
             <div class="uk-margin">
-                <form class="uk-search uk-search-default">
+                <form class="uk-search uk-search-default" action="/serch" method="post">
+                    {{ csrf_field() }}
                     <span uk-search-icon></span>
-                    <input class="uk-search-input" type="search" placeholder="依頼の検索">
+                    <input class="uk-search-input" type="search" placeholder="依頼の検索" name="keyword">
                 </form>
             </div>
     </nav>
@@ -40,7 +52,7 @@
 
 @yield('body')
 
-<hr class="uk-divider-icon">
+
 <footer style="height:300px;" class="uk-background-muted">
 <div class="uk-position-relative">
     <div class="uk-position-top">
@@ -52,9 +64,9 @@
                         <a href="#">menu</a>
                         <div class="uk-navbar-dropdown">
                             <ul class="uk-nav uk-navbar-dropdown-nav">
-                                <li><a href="/profile">プロフィール</a></li>
+                                <li><a href="/profile/{{$user_id}}">プロフィール</a></li>
                                 <li><a href="">依頼一覧</a></li>
-                                <li><a href="/job_request">依頼投稿</a></li>
+                                <li><a href="/jobRequest">依頼投稿</a></li>
                                 <li><a href="/logout">ログアウト</a></li>
                             </ul>
                         </div>
@@ -78,5 +90,10 @@
 </div>
 </footer>
 </div>
+<!--jQuery-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
+<script>
+var datepicker = UIkit.datepicker(element, {});
+</script>
 </body>
 </html>

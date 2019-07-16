@@ -36,4 +36,26 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    public function jobsToUser() {
+      return $this->hasMany('App\Job','user_id');
+    }
+    public function userInfosToUser() {
+      return $this->hasOne('App\User_Info','user_id');
+    }
+    public function portfoliosToUser() {
+      return $this->hasMany('App\Portfolio','user_id');
+    }
+    public function SubscribeToUser() {
+      return $this->hasMany('App\Subscribe','user_id');
+    }
+    public function followToUser() {
+      return $this->hasMany('App\Follow','user_id');
+    }
+    public function isFollowedToUser() {
+      return $this->hasMany('App\Follow','follow_user_id');
+    }
+    public function favoritesToUser() {
+      return $this->hasMany('App\Favorite','user_id');
+    }
 }

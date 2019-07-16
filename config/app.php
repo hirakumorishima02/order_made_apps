@@ -226,6 +226,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'faker_locale' => 'ja_JP',
+        'Form' => Collective\Html\FormFacade::class,
 
     ],
 
