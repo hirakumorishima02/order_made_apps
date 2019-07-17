@@ -102,7 +102,8 @@
     @elseif($job->user_id == $user_id)
     もしこの依頼を出した人の場合
         <!--もし依頼をする人を決めていない場合-->
-        @if(!isset($job->subscribe))
+        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->first(); ?>
+        @if(!isset($subscribeCheck))
         もし依頼をする人を決めていない場合
         <form action="/editRequest/{{$job->id}}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
@@ -240,7 +241,36 @@
     <!--依頼を頼まれた人がまだ納品をしていない場合-->
     @if($mySubscribe->status == 2)
     依頼を頼まれた人がまだ納品をしていない場合
-    納品ボタン
+    <h4>納品</h4>
+    <form method="post" action="/delivery"  enctype="multipart/form-data">
+    {{csrf_field()}}
+    <textarea name="body" row="5" style="width:100%;"></textarea>
+    <!--<input type="file" name="file"><br>-->
+    <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+    <input type="hidden" name="job_id" value="{{$job->id}}">
+    <input type="hidden" name="mySubscribe_id" value="{{$mySubscribe->id}}">
+    </form>
+    <!--依頼を頼まれた人が納品をした場合-->
+    @elseif($mySubscribe->status == 3)
+    依頼を頼まれた人が納品をした場合
+    <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+    @endif
+<!--依頼者の場合-->
+@elseif($job->user_id == $user_id)
+依頼者の場合
+    <!--依頼を頼まれた人がまだ納品をしていない場合-->
+    <?php
+    $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get();
+    foreach($subscribeCheck as $status => $val) {
+        if($val['status'] == 3){
+            // statusの値が3の配列のindex番号を探している
+            $i = $status;
+        }
+    };
+    ?>
+    <!--依頼を頼まれた人がすでに納品をした場合-->
+    @if($subscribeCheck[$i]['status'] == 3)
+    検収する
     @endif
 @endif
 </div>

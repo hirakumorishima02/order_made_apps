@@ -31,7 +31,7 @@ Route::post('/deleteRequest/{job_id}','JobController@deleteRequest');
 
 // メッセージ関連
 Route::post('/message','MessageController@message');
-
+Route::post('/delivery','MessageController@delivery');
 
 // 応募画面
 Route::post('/completeSubscribe','SubscribeController@completeSubscribe');

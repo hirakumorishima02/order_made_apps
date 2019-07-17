@@ -34,4 +34,26 @@ class MessageController extends Controller
         return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
         
     }
+    
+    public function delivery(Request $request){
+        $message = new Message;
+        $message->from_user_id = Auth::user()->id;
+        $message->body = $request->body;
+        $message->job_id = $request->job_id;
+        $message->save();
+        
+        $subscribe = Subscribe::where('id',$request->mySubscribe_id)->first();
+        $subscribe->status = 3;
+        $subscribe->save();
+        
+        
+        $user_id = Auth::user()->id;
+        $job = Job::find($user_id);
+        $user = User::find($user_id);
+        $userInfo = User_Info::where('user_id',$user_id)->first();
+        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
+        return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
+    }
 }
