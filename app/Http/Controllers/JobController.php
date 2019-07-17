@@ -8,9 +8,15 @@ use App\User;
 use App\Job;
 use App\User_Info;
 use App\Subscribe;
+use App\Message;
 
 class JobController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function job($job_id,$user_id){
         $job = Job::find($job_id);
         $user = User::find($user_id);
@@ -18,14 +24,17 @@ class JobController extends Controller
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('job.job',compact('job','user','userInfo','user_id','subscribes','my_jobs'));
+        $mySubscribe = Subscribe::where('job_id',$job_id)->where('user_id',$user_id)->first();
+        $messages = Message::where('job_id',$job_id)->latest()->simplePaginate(5);
+        return view('job.job',compact('job','user','userInfo','user_id','subscribes','my_jobs','mySubscribe','messages'));
     }
     
     public function jobRequest(){
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $user_id = Auth::user()->id;
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('job.job_request',compact('subscribes','user_id','my_jobs'));
+        $userInfo = User_Info::where('user_id',Auth::user()->id)->first();
+        return view('job.job_request',compact('subscribes','user_id','my_jobs','userInfo'));
     }
     
     public function confirmRequest(Request $request) {
@@ -73,4 +82,31 @@ class JobController extends Controller
         
         return redirect('/')->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribes' => $subscribes, 'my_jobs' => $my_jobs] );
     }
+    
+    
+    // 応募者決定->納品まで
+    public function applicants() {
+        
+        $user_id = Auth::user()->id;
+        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
+        $user = User::where('id','=', Auth::user()->id)->first();
+
+        return view('job.applicants',compact('user_id','subscribes','my_jobs','userInfo','user','subsc'));
+    }
+    public function decideApplicant($applicant_id) {
+        $subscribe = Subscribe::where('id',$applicant_id)->first();
+        $subscribe->status = 2;
+        $subscribe->save();
+        
+        $user_id = Auth::user()->id;
+        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
+        $user = User::where('id','=', Auth::user()->id)->first();
+        return view('job.decideApplicant',compact('user_id','subscribes','my_jobs','userInfo','user','subsc'));
+    }
+    
+    
 }

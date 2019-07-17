@@ -12,6 +12,11 @@ class Job extends Model
     public function user() {
       return $this->belongsTo('App\User', 'user_id');
     }
+    
+    public function subscribesToJob() {
+      return $this->hasMany('App\Subscribe','job_id');
+    }
+    
     public function favoritesToJob() {
       return $this->hasMany('App\Favorite','job_id');
     }

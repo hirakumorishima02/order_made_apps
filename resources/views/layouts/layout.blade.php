@@ -21,9 +21,12 @@
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             @foreach($my_jobs as $my_job)
-                            <li class="uk-active"><a href="/job/{{$my_job->id}}/{{$my_job->user_id}}">{{$my_job->title}}</a></li>
+                            <li><a href="/job/{{$my_job->id}}/{{$my_job->user_id}}">{{$my_job->title}}</a></li>
                             @endforeach
                             <li class="uk-active"><a href="/jobRequest">依頼の投稿</a></li>
+                            @if(isset($my_job))
+                            <li class="uk-active"><a href="/applicants">応募者状況</a></li>
+                            @endif
                         </ul>
                     </div>
                 </li>

@@ -39,12 +39,13 @@ class HomeController extends Controller
     }
     public function profile($user_id) {
         $userInfo = User_Info::where('user_id',$user_id)->first();
+        $thisUser = User::where('id',$user_id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
         $user_id = Auth::user()->id;
         $portfolios = Portfolio::where('user_id','=', Auth::user()->id)->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs'));
+        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs','thisUser'));
     }
     
     public function editProfile(){

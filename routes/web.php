@@ -22,10 +22,15 @@ Route::post('/serch', 'HomeController@serch');
 // 仕事画面
 Route::get('/job/{job_id}/{user_id}','JobController@job');
 Route::get('/jobRequest','JobController@jobRequest');
+Route::get('/applicants','JobController@applicants');
+Route::get('/decideApplicant/{applicant_id}','JobController@decideApplicant');
 Route::post('/confirmRequest','JobController@confirmRequest');
 Route::post('/completeRequest','JobController@completeRequest');
 Route::post('/editRequest/{job_id}','JobController@editRequest');
 Route::post('/deleteRequest/{job_id}','JobController@deleteRequest');
+
+// メッセージ関連
+Route::post('/message','MessageController@message');
 
 
 // 応募画面
@@ -36,3 +41,4 @@ Route::post('/backSubscribe','SubscribeController@backSubscribe');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');

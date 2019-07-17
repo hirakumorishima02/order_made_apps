@@ -17,7 +17,7 @@
     </div>
     <div class="uk-width-3-4">
         <div class="uk-card  uk-card-default uk-card-body " style="width:1000px;">
-            <h3>{{ $userInfo->user->name }}さんのプロフィール</h3>
+            <h3>{{ $thisUser->name }}さんのプロフィール</h3>
             @if(isset($userInfo)&&isset($user))
             <p>{{ $userInfo->profile }}</p>
             @else

@@ -3,7 +3,7 @@
 @section('title','依頼投稿フォーム')
 
 @section('body')
-
+@if(isset($userInfo))
 <hr class="uk-divider-icon">
 <!--応募フォーム-->
 <div style="width:700px;margin: 0 auto;">
@@ -37,7 +37,9 @@
     </fieldset>
 </form>
 </div>
-</div>
+@else
+<p><a href="/editProfile">依頼投稿前にプロフィールを登録してください。</a></p>
+@endif
 <hr class="uk-divider-icon">
 
 @endsection

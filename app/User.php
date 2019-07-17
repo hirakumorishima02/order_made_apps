@@ -46,7 +46,7 @@ class User extends Authenticatable
     public function portfoliosToUser() {
       return $this->hasMany('App\Portfolio','user_id');
     }
-    public function SubscribeToUser() {
+    public function subscribesToUser() {
       return $this->hasMany('App\Subscribe','user_id');
     }
     public function followToUser() {
@@ -58,4 +58,11 @@ class User extends Authenticatable
     public function favoritesToUser() {
       return $this->hasMany('App\Favorite','user_id');
     }
+    public function messagesToUser() {
+      return $this->hasMany('App\Message','to_user_id');
+    }
+    public function messagesFromUser() {
+      return $this->hasMany('App\Message','from_user_id');
+    }
+    
 }
