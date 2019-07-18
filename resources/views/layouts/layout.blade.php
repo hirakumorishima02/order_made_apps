@@ -9,6 +9,13 @@
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
+    <!--jQuery-->
+
+    <style>
+        .hidden{
+            display:none;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -96,7 +103,16 @@
 <!--jQuery-->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
 <script>
-var datepicker = UIkit.datepicker(element, {});
+
+// followボタンを押すと、followが消えたり出てきたり、という機能
+// 'use strict';
+// var target = document.getElementById("hidden");
+//     target.onclick = function(){
+//         target.classList.add("hidden");    
+//         target.parentNode.submit();
+// };
+
+
 </script>
 </body>
 </html>

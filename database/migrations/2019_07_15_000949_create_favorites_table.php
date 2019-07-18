@@ -18,6 +18,14 @@ class CreateFavoritesTable extends Migration
             $table->unsignedBigInteger('user_id'); //ユーザーID
             $table->unsignedBigInteger('job_id'); //お気に入り登録した仕事のID
             $table->timestamps();
+            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
+                  
+            $table->foreign('job_id')
+                  ->references('id')
+                  ->on('jobs');
         });
     }
 

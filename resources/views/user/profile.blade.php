@@ -13,6 +13,24 @@
             @else
             <img data-src="/images/avatar.jpg" width="" height="" alt="" uk-img>
             @endif
+                <!--忘れてはいけないリレーションメソッドの使用例!-->
+                @if($thisUser->id != $user_id && null == $user->followsToUser()->where('follow_user_id',$thisUser->id)->first())
+                    <form action="/follow" method="post" onsubmit="doSomething();return false;">
+                        {{csrf_field()}}
+                        <a href="javascript:void(0)" onclick="this.parentNode.submit()" uk-icon="heart" id="hidden"></a>follow
+                        <input type="hidden" name="follow_user_id" value="{{$thisUser->id}}">
+                        <input type="hidden" name="user_id" value="{{$user_id}}">
+                    </form>
+                @elseif(isset($follow->follow_user_id))
+                        @if($follow->follow_user_id == $thisUser->id)
+                        <form action="/deleteFollow" method="post" onsubmit="doSomething();return false;">
+                            {{csrf_field()}}
+                            <a href="javascript:void(0)" onclick="this.parentNode.submit()" uk-icon="heart" id="fav"></a>follow解除
+                            <input type="hidden" name="follow_user_id" value="{{$thisUser->id}}">
+                            <input type="hidden" name="follow_id" value="{{$follow->id}}">
+                        </form>
+                        @endif
+                @endif
         </div>
     </div>
     <div class="uk-width-3-4">
@@ -31,7 +49,7 @@
             <tbody>
                 <tr>
                     <td class="uk-width-medium">制作実績</td>
-                    @if(isset($portfolio)&&isset($user))
+                    @if(isset($portfolios))
                     @foreach($portfolios as $val)
                     <td>{{$val->title}}</td>
                     @endforeach

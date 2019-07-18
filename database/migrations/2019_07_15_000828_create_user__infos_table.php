@@ -21,6 +21,10 @@ class CreateUserInfosTable extends Migration
             $table->string('github')->nullable(); //githubアカウント
             $table->text('url')->nullable(); //ポートフォリオサイト
             $table->timestamps();
+            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 

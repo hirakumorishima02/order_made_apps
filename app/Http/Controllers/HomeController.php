@@ -9,6 +9,8 @@ use App\User_Info;
 use App\User;
 use App\Portfolio;
 use App\Subscribe;
+use App\Favorite;
+use App\Follow;
 
 class HomeController extends Controller
 {
@@ -33,19 +35,22 @@ class HomeController extends Controller
         $jobList3 = Job::inRandomOrder()->take(4)->get();
         $jobList4 = Job::inRandomOrder()->take(4)->get();
         $user_id = Auth::user()->id;
+        $user = Auth::user();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('user.user',compact('jobList1','jobList2','jobList3','jobList4','user_id','subscribes','my_jobs'));
+        $my_follows = Follow::where('user_id',Auth::user()->id)->get();
+        return view('user.user',compact('jobList1','jobList2','jobList3','jobList4','user_id','subscribes','my_jobs','user','my_follows'));
     }
     public function profile($user_id) {
         $userInfo = User_Info::where('user_id',$user_id)->first();
         $thisUser = User::where('id',$user_id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
         $user_id = Auth::user()->id;
-        $portfolios = Portfolio::where('user_id','=', Auth::user()->id)->get();
+        $portfolios = Portfolio::where('user_id',$user_id)->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs','thisUser'));
+        $follow = Follow::where('follow_user_id', $thisUser->id)->first();
+        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs','thisUser','follow'));
     }
     
     public function editProfile(){
@@ -157,5 +162,19 @@ class HomeController extends Controller
         $user = User::where('id','=', Auth::user()->id)->first();
         
         return view ('job.serch_resault',compact('jobs','keyword','user_id','user_id','subscribes','my_jobs','userInfo','user'));
+    }
+    
+    public function follow(Request $request) {
+        $follow = new follow;
+        $follow->follow_user_id = $request->follow_user_id;
+        $follow->user_id = $request->user_id;
+        $follow->save();
+        
+        return redirect('/profile/'. $request->follow_user_id);
+    }
+    public function deleteFollow(Request $request) {
+        $follow = Follow::find($request->follow_id);
+        $follow->delete();
+        return redirect('/profile/'. $request->follow_user_id);
     }
 }

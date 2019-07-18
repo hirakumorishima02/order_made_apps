@@ -74,63 +74,25 @@
 <hr class="uk-divider-icon">
     <section class="follow-item">
     <div class="uk-card uk-card-default uk-card-body" style="z-index: 980;text-align:center;" uk-sticky="bottom: #offset"><h3>フォロークライアントのご依頼</h3></div>
-    <a href="/job/{{$job->id}}/{{$job->user_id}}">
-        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-            <div class="uk-card-media-left uk-cover-container">
-                <img src="/images/light.jpg" alt="" uk-cover>
-                <canvas width="300" height="200"></canvas>
-            </div>
-            <div id="follow_item">
-                <div class="uk-card-body">
-                    <h3 class="uk-card-title">依頼タイトル</h3>
-                    <p>依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 </p>
+    <!--もしログインユーザーが1人でも誰かをフォローしていたら-->
+    @if(null !== $my_follows->first())
+        @foreach($my_follows as $follow)
+        <a href="/job/{{ $follow->follow_user->jobsToUser()->first()->id }}/{{ $follow->follow_user->jobsToUser()->first()->user_id }}">
+            <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+                <div class="uk-card-media-left uk-cover-container">
+                    <img src="/images/light.jpg" alt="" uk-cover>
+                    <canvas width="300" height="200"></canvas>
+                </div>
+                <div id="follow_item">
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">{{ $follow->follow_user->jobsToUser()->first()->title }}</h3>
+                        <p>{{ $follow->follow_user->jobsToUser()->first()->content }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </a>
-    <a href="/job/{{$job->id}}/{{$job->user_id}}">
-        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-            <div class="uk-flex-last@s uk-card-media-right uk-cover-container">
-                <img src="/images/light.jpg" alt="" uk-cover>
-                <canvas width="300" height="200"></canvas>
-            </div>
-            <div>
-                <div class="uk-card-body">
-                    <h3 class="uk-card-title">依頼タイトル</h3>
-                    <p>依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 </p>
-                </div>
-            </div>
-        </div>
-    </a>
-    <a href="/job/{{$job->id}}/{{$job->user_id}}">
-        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-            <div class="uk-card-media-left uk-cover-container">
-                <img src="/images/light.jpg" alt="" uk-cover>
-                <canvas width="300" height="200"></canvas>
-            </div>
-            <div id="follow_item">
-                <div class="uk-card-body">
-                    <h3 class="uk-card-title">依頼タイトル</h3>
-                    <p>依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 </p>
-                </div>
-            </div>
-        </div>
-    </a>
-    <a href="/job/{{$job->id}}/{{$job->user_id}}">
-        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-            <div class="uk-flex-last@s uk-card-media-right uk-cover-container">
-                <img src="/images/light.jpg" alt="" uk-cover>
-                <canvas width="300" height="200"></canvas>
-            </div>
-            <div>
-                <div class="uk-card-body">
-                    <h3 class="uk-card-title">依頼タイトル</h3>
-                    <p>依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 依頼文です。 </p>
-                </div>
-            </div>
-        </div>
-    </a>
+        </a>
+        @endforeach
+    @endif
     </section>
 </div>
-
 @endsection

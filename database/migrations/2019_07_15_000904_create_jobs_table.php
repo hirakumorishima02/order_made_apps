@@ -22,7 +22,13 @@ class CreateJobsTable extends Migration
             $table->text('job_photo')->nullable(); //参考画像
             $table->decimal('money'); //希望契約金額
             $table->timestamps();
+            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
+        
+        
     }
 
     /**

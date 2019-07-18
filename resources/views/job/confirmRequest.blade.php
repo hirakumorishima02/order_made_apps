@@ -27,6 +27,10 @@
                     <td class="uk-width-small">希望納期</td>
                     <td>{{$job->wish_at}}</td>
                 </tr>
+                <tr>
+                    <td>添付画像</td>
+                    <td><img src="{{}}"></td>
+                </tr>
             </tbody>
         </table>
     <div style="display:inline-flex;" uk-margin>

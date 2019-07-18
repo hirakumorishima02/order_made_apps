@@ -18,6 +18,10 @@ class CreatePortfoliosTable extends Migration
             $table->unsignedBigInteger('user_id'); //実績主のid
             $table->text('title'); //仕事名
             $table->timestamps();
+            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 

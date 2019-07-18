@@ -13,11 +13,15 @@
 
 // ユーザー画面・プロフィール画面
 Route::get('/','HomeController@user');
+Route::get('/home', 'HomeController@user')->name('user');
+
 Route::get('/profile/{user_id}','HomeController@profile');
 Route::get('/editProfile','HomeController@editProfile');
 Route::post('/addProfile','HomeController@addProfile');
 Route::post('/updateProfile','HomeController@updateProfile');
 Route::post('/serch', 'HomeController@serch');
+Route::post('/follow', 'HomeController@follow');
+Route::post('/deleteFollow', 'HomeController@deleteFollow');
 
 // 仕事画面
 Route::get('/job/{job_id}/{user_id}','JobController@job');
@@ -32,6 +36,7 @@ Route::post('/deleteRequest/{job_id}','JobController@deleteRequest');
 // メッセージ関連
 Route::post('/message','MessageController@message');
 Route::post('/delivery','MessageController@delivery');
+Route::post('/jobComplete','MessageController@jobComplete');
 
 // 応募画面
 Route::post('/completeSubscribe','SubscribeController@completeSubscribe');
@@ -40,5 +45,10 @@ Route::post('/backSubscribe','SubscribeController@backSubscribe');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+
+// テスト用
+Route::get('/test', function(){
+    return view('test');
+});

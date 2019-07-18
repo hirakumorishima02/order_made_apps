@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use App\User;
 use App\Job;
 use App\User_Info;
@@ -40,6 +41,7 @@ class JobController extends Controller
     public function confirmRequest(Request $request) {
         $job = new Job($request->except(['job_photo']));
         $request->session()->put('job', $job);
+
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $my_jobs = Job::where('user_id',Auth::user()->id)->get();
@@ -47,8 +49,11 @@ class JobController extends Controller
     }
     
     public function completeRequest(Request $request) {
+        $fileData = Session::get('job_photo');
+        
         $job = $request->session()->get('job');
         $job->user_id = Auth::user()->id;
+        $job_job_photo = $fileData;
         $job->save();
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();

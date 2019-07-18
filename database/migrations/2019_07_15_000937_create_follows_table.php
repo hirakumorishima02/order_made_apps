@@ -18,6 +18,15 @@ class CreateFollowsTable extends Migration
             $table->unsignedBigInteger('user_id'); //ユーザーID
             $table->unsignedBigInteger('follow_user_id'); //フォローしたユーザーのID
             $table->timestamps();
+            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
+                  
+            $table->foreign('follow_user_id')
+                  ->references('id')
+                  ->on('users');
+        
         });
     }
 

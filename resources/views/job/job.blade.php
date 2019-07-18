@@ -172,6 +172,64 @@
                     </tr>
                 </tbody>
             </table>
+            <!---->
+            <!---->
+            <!--依頼を頼まれた人の場合-->
+            @if($job->user_id != $user_id) <!--発注者でもなく、受注希望者でもない人を入れる-->
+            受注希望者の場合
+                <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                @if($mySubscribe->status == 2)
+                依頼を頼まれた人がまだ納品をしていない場合
+                <h4>納品</h4>
+                <form method="post" action="/delivery" enctype="multipart/form-data">
+                {{csrf_field()}}
+                <textarea name="body" row="5" style="width:100%;"></textarea>
+                <!--<input type="file" name="file"><br>-->
+                <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+                <input type="hidden" name="job_id" value="{{$job->id}}">
+                <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                </form>
+                <!--依頼を頼まれた人が納品をした場合-->
+                @elseif($mySubscribe->status == 3)
+                依頼を頼まれた人が納品をした場合
+                <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+                @endif
+            <!--依頼者の場合-->
+            @elseif($job->user_id == $user_id)
+            依頼者の場合
+                <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+                    @if(null !== App\Subscribe::where('job_id', $job->id)->first())
+                        <?php
+                            foreach($subscribeCheck as $status => $val) {
+                            if($val['status'] == 3){
+                                    // statusの値が3の配列のindex番号を探している
+                                    $i = $status;
+                                }else{
+                                    $i = 0;
+                                }
+                            };
+                        ?>
+                        <!--依頼を頼まれた人がすでに納品をした場合-->
+                        依頼を頼まれた人がすでに納品をした場合
+                        @if($subscribeCheck[$i]['status'] == 3)
+                        <form method="post" action="/jobComplete">
+                            {{csrf_field()}}
+                            <textarea name="body" row="5" style="width:100%;"></textarea>
+                            <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">検収完了</button>
+                            <input type="hidden" name="job_id" value="{{$job->id}}">
+                            <input type="hidden" name="title" value="{{$job->title}}">
+                            <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                            <input type="hidden" name="subscribe_user_id" value="{{$subscribeCheck[$i]['user_id']}}">
+                        </form>
+                        @else($subscribeCheck[$i]['status'] == 4)
+                        <p>検収が完了しました！</p>
+                        @endif
+                    @endif
+            @endif
+            <!---->
+            <!---->
+            
             <!--メッセージが届いてない場合-->
             @else
             メッセージが届いてない場合
@@ -182,6 +240,63 @@
                 <input type="submit">
                 <input type="hidden" name="job_id" value="{{$job->id}}">
             </form>
+            <!---->
+            <!---->
+            <!--依頼を頼まれた人の場合-->
+            @if($job->user_id != $user_id) <!--発注者でもなく、受注希望者でもない人を入れる-->
+            受注希望者の場合
+                <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                @if($mySubscribe->status == 2)
+                依頼を頼まれた人がまだ納品をしていない場合
+                <h4>納品</h4>
+                <form method="post" action="/delivery"  enctype="multipart/form-data">
+                {{csrf_field()}}
+                <textarea name="body" row="5" style="width:100%;"></textarea>
+                <!--<input type="file" name="file"><br>-->
+                <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+                <input type="hidden" name="job_id" value="{{$job->id}}">
+                <input type="hidden" name="mySubscribe_id" value="{{$mySubscribe->id}}">
+                </form>
+                <!--依頼を頼まれた人が納品をした場合-->
+                @elseif($mySubscribe->status == 3)
+                依頼を頼まれた人が納品をした場合
+                <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+                @endif
+            <!--依頼者の場合-->
+            @elseif($job->user_id == $user_id)
+            依頼者の場合
+                <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+                    @if(null !== App\Subscribe::where('job_id', $job->id)->first())
+                        <?php
+                            foreach($subscribeCheck as $status => $val) {
+                            if($val['status'] == 3){
+                                    // statusの値が3の配列のindex番号を探している
+                                    $i = $status;
+                                }else{
+                                    $i = 0;
+                                }
+                            };
+                        ?>
+                        <!--依頼を頼まれた人がすでに納品をした場合-->
+                        依頼を頼まれた人がすでに納品をした場合
+                        @if($subscribeCheck[$i]['status'] == 3)
+                        <form method="post" action="/jobComplete">
+                            {{csrf_field()}}
+                            <textarea name="body" row="5" style="width:100%;"></textarea>
+                            <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">検収完了</button>
+                            <input type="hidden" name="job_id" value="{{$job->id}}">
+                            <input type="hidden" name="title" value="{{$job->title}}">
+                            <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                        </form>
+                        @else($subscribeCheck[$i]['status'] == 4)
+                        <p>検収が完了しました！</p>
+                        @endif
+                    @endif
+            @endif
+            <!---->
+            <!---->
+            
             @endif
         @endif
     @endif
@@ -235,44 +350,7 @@
 <p>依頼者が決定されたか、検討中です。</p>
 @endif
 </div>
-<!--依頼を頼まれた人の場合-->
-@if($job->user_id != $user_id)
-受注希望者の場合
-    <!--依頼を頼まれた人がまだ納品をしていない場合-->
-    @if($mySubscribe->status == 2)
-    依頼を頼まれた人がまだ納品をしていない場合
-    <h4>納品</h4>
-    <form method="post" action="/delivery"  enctype="multipart/form-data">
-    {{csrf_field()}}
-    <textarea name="body" row="5" style="width:100%;"></textarea>
-    <!--<input type="file" name="file"><br>-->
-    <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
-    <input type="hidden" name="job_id" value="{{$job->id}}">
-    <input type="hidden" name="mySubscribe_id" value="{{$mySubscribe->id}}">
-    </form>
-    <!--依頼を頼まれた人が納品をした場合-->
-    @elseif($mySubscribe->status == 3)
-    依頼を頼まれた人が納品をした場合
-    <p>ただいま{{$job->user->name}}さんが検収しています。</p>
-    @endif
-<!--依頼者の場合-->
-@elseif($job->user_id == $user_id)
-依頼者の場合
-    <!--依頼を頼まれた人がまだ納品をしていない場合-->
-    <?php
-    $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get();
-    foreach($subscribeCheck as $status => $val) {
-        if($val['status'] == 3){
-            // statusの値が3の配列のindex番号を探している
-            $i = $status;
-        }
-    };
-    ?>
-    <!--依頼を頼まれた人がすでに納品をした場合-->
-    @if($subscribeCheck[$i]['status'] == 3)
-    検収する
-    @endif
-@endif
+
 </div>
 <hr class="uk-divider-icon">
 @endsection

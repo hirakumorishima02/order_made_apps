@@ -49,7 +49,7 @@ class User extends Authenticatable
     public function subscribesToUser() {
       return $this->hasMany('App\Subscribe','user_id');
     }
-    public function followToUser() {
+    public function followsToUser() {
       return $this->hasMany('App\Follow','user_id');
     }
     public function isFollowedToUser() {
