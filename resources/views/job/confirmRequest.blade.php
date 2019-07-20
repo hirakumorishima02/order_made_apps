@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
                     <td>添付画像</td>
-                    <td><img src="{{}}"></td>
+                    <td><img src="{{$job->job_photo}}"></td>
                 </tr>
             </tbody>
         </table>

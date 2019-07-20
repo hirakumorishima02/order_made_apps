@@ -10,12 +10,11 @@
     <div class="uk-child-width-expand@s uk-text-center uk-animation-slide-bottom" uk-grid="parallax: 150">
     @foreach($jobList1 as $job)
     <div>
-        <div class="uk-card uk-card-default">
-            <div class="uk-card-media-top uk-height-small"><img src="/images/light.jpg" alt=""></div>
+        <div class="uk-card uk-card-default job-card">
+            <div class="uk-card-media-top uk-height-small"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
             <a href="/job/{{$job->id}}/{{$job->user_id}}">
                 <div class="uk-card uk-card-default uk-card-body uk-grid-margin">
-                    <h3 class="uk-card-title">{{ $job->title }}</h3>
-                    <p style="overflow: hidden;text-overflow: ellipsis;height: 70px;">{{ $job->content}}</p>
+                    <h3 class="uk-card-title" style="overflow:scroll;height:100px;">{{ $job->title }}</h3>
                 </div>
             </a>
         </div>
@@ -25,12 +24,11 @@
     <div class="uk-child-width-expand@s uk-text-center uk-animation-slide-bottom" uk-grid="parallax: 150">
     @foreach($jobList2 as $job)
     <div>
-        <div class="uk-card uk-card-default">
-            <div class="uk-card-media-top uk-height-small"><img src="/images/light.jpg" alt=""></div>
+        <div class="uk-card uk-card-default job-card">
+            <div class="uk-card-media-top uk-height-small"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
             <a href="/job/{{$job->id}}/{{$job->user_id}}">
                 <div class="uk-card uk-card-default uk-card-body uk-grid-margin">
-                    <h3 class="uk-card-title">{{ $job->title }}</h3>
-                    <p style="overflow: hidden;text-overflow: ellipsis;height: 70px;">{{ $job->content}}</p>
+                    <h3 class="uk-card-title" style="overflow:scroll;height:100px;">{{ $job->title }}</h3>
                 </div>
             </a>
         </div>
@@ -40,12 +38,11 @@
     <div class="uk-child-width-expand@s uk-text-center uk-animation-slide-bottom" uk-grid="parallax: 150">
     @foreach($jobList3 as $job)
     <div>
-        <div class="uk-card uk-card-default">
-            <div class="uk-card-media-top uk-height-small"><img src="/images/light.jpg" alt=""></div>
+        <div class="uk-card uk-card-default job-card">
+            <div class="uk-card-media-top uk-height-small"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
             <a href="/job/{{$job->id}}/{{$job->user_id}}">
                 <div class="uk-card uk-card-default uk-card-body uk-grid-margin">
-                    <h3 class="uk-card-title">{{ $job->title }}</h3>
-                    <p style="overflow: hidden;text-overflow: ellipsis;height: 70px;">{{ $job->content}}</p>
+                    <h3 class="uk-card-title" style="overflow:scroll;height:100px;">{{ $job->title }}</h3>
                 </div>
             </a>
         </div>
@@ -55,12 +52,11 @@
     <div class="uk-child-width-expand@s uk-text-center uk-animation-slide-bottom" uk-grid="parallax: 150">
     @foreach($jobList4 as $job)
     <div>
-        <div class="uk-card uk-card-default">
-            <div class="uk-card-media-top uk-height-small"><img src="/images/light.jpg" alt=""></div>
+        <div class="uk-card uk-card-default job-card">
+            <div class="uk-card-media-top uk-height-small"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
             <a href="/job/{{$job->id}}/{{$job->user_id}}">
                 <div class="uk-card uk-card-default uk-card-body uk-grid-margin">
-                    <h3 class="uk-card-title">{{ $job->title }}</h3>
-                    <p style="overflow: hidden;text-overflow: ellipsis;height: 70px;">{{ $job->content}}</p>
+                    <h3 class="uk-card-title" style="overflow:scroll;height:100px;">{{ $job->title }}</h3>
                 </div>
             </a>
         </div>

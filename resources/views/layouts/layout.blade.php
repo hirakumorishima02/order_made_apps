@@ -7,15 +7,14 @@
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css" />
     <!-- UIkit JS -->
+    
+    <!--jQuery-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
-    <!--jQuery-->
-
-    <style>
-        .hidden{
-            display:none;
-        }
-    </style>
+    <!--Datepicker用のcdn-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.1/js/components/datepicker.js"></script>
+    <link href="{{ secure_asset('css/styles.css') }}" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -100,8 +99,6 @@
 </div>
 </footer>
 </div>
-<!--jQuery-->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
 <script>
 
 // followボタンを押すと、followが消えたり出てきたり、という機能

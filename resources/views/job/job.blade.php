@@ -15,8 +15,8 @@
     <a href="/profile/{{$job->user_id}}">
     <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
         <div class="uk-card-media-left uk-cover-container">
-            @if(isset($job->user->userInfosToUser()->photo))
-            <img src="{{$userInfo->photo}}" alt="" uk-cover width="200" height="200">
+            @if(null != $job->user()->first()->userInfosToUser()->first()->photo)
+            <img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}" alt="" uk-cover width="200" height="200">
             @else
             <img src="/images/avatar.jpg" alt="" uk-cover width="200" height="200">
             @endif
@@ -65,13 +65,12 @@
                 <div>
                     <p class="uk-text-top">{{$job->content}}</p>
                 </div>
+                @if(isset($job->job_photo))
+                    <div>
+                        イメージ：<a href="{{$job->job_photo}}"><span uk-icon="file-text"></span></a>
+                    </div>
+                @endif
             </div>
-    </div>
-    <!--イメージ画像-->
-    <div style="margin:0 auto;width:600px;">
-        @if(isset($job->job_photo))
-        <img data-src="{{$job->job_photo}}" width="900" height="600" alt="" uk-img>
-        @endif
     </div>
 <hr class="uk-divider-icon">
 
@@ -102,7 +101,7 @@
     @elseif($job->user_id == $user_id)
     もしこの依頼を出した人の場合
         <!--もし依頼をする人を決めていない場合-->
-        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->first(); ?>
+        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->where('status','!=',1)->first(); ?>
         @if(!isset($subscribeCheck))
         もし依頼をする人を決めていない場合
         <form action="/editRequest/{{$job->id}}" method="post" enctype="multipart/form-data">
@@ -135,6 +134,15 @@
             <input type="hidden" name="id" value="{{$job->id}}">
             </fieldset>
         </form>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form action="/deleteRequest/{{$job->id}}" method="post"  onclick='return confirm("本当に削除しますか？");'>
             {{ csrf_field() }}
             <p style="text-align:center;margin-top:10px;" uk-margin>
@@ -147,14 +155,17 @@
         @else
         もし依頼をする人を決めている場合
             <!--メッセージが届いている場合-->
-            @if(isset($messages[0]))
-            メッセージが届いている場合
+            @if(null !== $messages->first())
+            メッセージが届いている場合2
             <table class="uk-table uk-table-hover uk-table-divider">
                 <tbody>
                     @foreach($messages as $message)
                     <tr>
                         <td class="uk-width-small">{{$message->user->name}}</td>
                         <td class="uk-width-small">{{$message->body}}</td>
+                        @if(isset($message->file))
+                        <td class="uk-width-small"><a href="{{$message->file}}"><span uk-icon="file-text"></span></a></td>
+                        @endif
                         <td class="uk-width-small">{{$message->created_at}}</td>
                     </tr>
                     @endforeach
@@ -162,9 +173,18 @@
                     <form method="post" action="/message" style="width:500px;margin:0 auto;">
                         {{csrf_field()}}
                         <tr><textarea name="body" row="5" style="width:100%;"></textarea></tr>
-                        <input type="submit">
+                        <input type="submit" value="メッセージ送信">
                         <input type="hidden" name="job_id" value="{{$job->id}}">
                     </form>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     </tr>
                     <tr>
                         <!--ペジネーション-->
@@ -179,31 +199,72 @@
             受注希望者の場合
                 <!--依頼を頼まれた人がまだ納品をしていない場合-->
                 @if($mySubscribe->status == 2)
-                依頼を頼まれた人がまだ納品をしていない場合
+                依頼を頼まれた人がまだ納品をしていない場合1
                 <h4>納品</h4>
                 <form method="post" action="/delivery" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <textarea name="body" row="5" style="width:100%;"></textarea>
-                <!--<input type="file" name="file"><br>-->
+                <input type="file" name="file"><br>
                 <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
                 <input type="hidden" name="job_id" value="{{$job->id}}">
-                <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
                 </form>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <!--依頼を頼まれた人が納品をした場合-->
                 @elseif($mySubscribe->status == 3)
-                依頼を頼まれた人が納品をした場合
+                依頼を頼まれた人が納品をした場合1
                 <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+                <h4>再納品</h4>
+                <form method="post" action="/delivery" enctype="multipart/form-data">
+                {{csrf_field()}}
+                <textarea name="body" row="5" style="width:100%;"></textarea>
+                <input type="file" name="file"><br>
+                <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+                <input type="hidden" name="job_id" value="{{$job->id}}">
+                
+                    <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+                    <?php
+                        foreach($subscribeCheck as $status => $val) {
+                        if($val['status'] == 3){
+                                // statusの値が3の配列のindex番号を探している4
+                                $i = $status;
+                            }else{
+                                $i = 0;
+                            }
+                        };
+                    ?>
+                
+                <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                </form>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @endif
             <!--依頼者の場合-->
             @elseif($job->user_id == $user_id)
             依頼者の場合
                 <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                依頼を頼まれた人がまだ納品をしていない場合2
                 <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
                     @if(null !== App\Subscribe::where('job_id', $job->id)->first())
                         <?php
                             foreach($subscribeCheck as $status => $val) {
                             if($val['status'] == 3){
-                                    // statusの値が3の配列のindex番号を探している
+                                    // statusの値が3の配列のindex番号を探している1
                                     $i = $status;
                                 }else{
                                     $i = 0;
@@ -211,8 +272,8 @@
                             };
                         ?>
                         <!--依頼を頼まれた人がすでに納品をした場合-->
-                        依頼を頼まれた人がすでに納品をした場合
                         @if($subscribeCheck[$i]['status'] == 3)
+                        依頼を頼まれた人がすでに納品をしている場合
                         <form method="post" action="/jobComplete">
                             {{csrf_field()}}
                             <textarea name="body" row="5" style="width:100%;"></textarea>
@@ -222,7 +283,7 @@
                             <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
                             <input type="hidden" name="subscribe_user_id" value="{{$subscribeCheck[$i]['user_id']}}">
                         </form>
-                        @else($subscribeCheck[$i]['status'] == 4)
+                        @elseif($subscribeCheck[$i]['status'] == 4)
                         <p>検収が完了しました！</p>
                         @endif
                     @endif
@@ -240,6 +301,15 @@
                 <input type="submit">
                 <input type="hidden" name="job_id" value="{{$job->id}}">
             </form>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <!---->
             <!---->
             <!--依頼を頼まれた人の場合-->
@@ -247,31 +317,64 @@
             受注希望者の場合
                 <!--依頼を頼まれた人がまだ納品をしていない場合-->
                 @if($mySubscribe->status == 2)
-                依頼を頼まれた人がまだ納品をしていない場合
+                依頼を頼まれた人がまだ納品をしていない場合3
                 <h4>納品</h4>
                 <form method="post" action="/delivery"  enctype="multipart/form-data">
                 {{csrf_field()}}
                 <textarea name="body" row="5" style="width:100%;"></textarea>
-                <!--<input type="file" name="file"><br>-->
+                <input type="file" name="file"><br>
                 <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
                 <input type="hidden" name="job_id" value="{{$job->id}}">
                 <input type="hidden" name="mySubscribe_id" value="{{$mySubscribe->id}}">
                 </form>
+                {{$mySubscribe->id}}
                 <!--依頼を頼まれた人が納品をした場合-->
                 @elseif($mySubscribe->status == 3)
-                依頼を頼まれた人が納品をした場合
+                依頼を頼まれた人が納品をした場合2
                 <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+                <h4>再納品</h4>
+                <form method="post" action="/delivery" enctype="multipart/form-data">
+                {{csrf_field()}}
+                <textarea name="body" row="5" style="width:100%;"></textarea>
+                <input type="file" name="file"><br>
+                <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+                <input type="hidden" name="job_id" value="{{$job->id}}">
+                
+                    <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+                    <?php
+                        foreach($subscribeCheck as $status => $val) {
+                        if($val['status'] == 3){
+                                // statusの値が3の配列のindex番号を探している4
+                                $i = $status;
+                            }else{
+                                $i = 0;
+                            }
+                        };
+                    ?>
+                
+                <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+                </form>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @endif
             <!--依頼者の場合-->
             @elseif($job->user_id == $user_id)
             依頼者の場合
                 <!--依頼を頼まれた人がまだ納品をしていない場合-->
+                依頼を頼まれた人がまだ納品をしていない場合4
                 <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
                     @if(null !== App\Subscribe::where('job_id', $job->id)->first())
                         <?php
                             foreach($subscribeCheck as $status => $val) {
                             if($val['status'] == 3){
-                                    // statusの値が3の配列のindex番号を探している
+                                    // statusの値が3の配列のindex番号を探している2
                                     $i = $status;
                                 }else{
                                     $i = 0;
@@ -279,7 +382,7 @@
                             };
                         ?>
                         <!--依頼を頼まれた人がすでに納品をした場合-->
-                        依頼を頼まれた人がすでに納品をした場合
+                        依頼を頼まれた人がすでに納品をしている場合
                         @if($subscribeCheck[$i]['status'] == 3)
                         <form method="post" action="/jobComplete">
                             {{csrf_field()}}
@@ -289,7 +392,7 @@
                             <input type="hidden" name="title" value="{{$job->title}}">
                             <input type="hidden" name="subscribe_id" value="{{$subscribeCheck[$i]['id']}}">
                         </form>
-                        @else($subscribeCheck[$i]['status'] == 4)
+                        @elseif($subscribeCheck[$i]['status'] == 4)
                         <p>検収が完了しました！</p>
                         @endif
                     @endif
@@ -303,23 +406,27 @@
     </div>
 <!--もしこの依頼に応募しており、まだ依頼主が決定していない場合-->
 @elseif($mySubscribe->status == 1 )
-もしこの依頼に応募しており、まだ依頼主が決定していない場合
+もしこの依頼に応募しており、まだ依頼主が決定していない場合1
 <p>依頼者が決定されたか、検討中です。</p>
 <!--もしこの依頼に応募しており、依頼主に決定された場合-->
-@elseif($mySubscribe->status != 1 || $job->user_id == $user_id)
+@elseif($mySubscribe->status != 1)
+もしこの依頼に応募しており、依頼主に決定された場合
 <div style="margin:0 auto">
     お仕事チャット欄
     <!--メッセージが届いている場合-->
     @if(isset($messages))
-    メッセージが届いている場合
+    メッセージが届いている場合1
         <table class="uk-table uk-table-hover uk-table-divider">
             <tbody>
                 @foreach($messages as $message)
-                <tr>
-                    <td class="uk-width-small">{{$message->user->name}}</td>
-                    <td class="uk-width-small">{{$message->body}}</td>
-                    <td class="uk-width-small">{{$message->created_at}}</td>
-                </tr>
+                    <tr>
+                        <td class="uk-width-small">{{$message->user->name}}</td>
+                        <td class="uk-width-small">{{$message->body}}</td>
+                        @if(isset($message->file))
+                        <td class="uk-width-small"><a href="{{$message->file}}"><span uk-icon="file-text"></span></a></td>
+                        @endif
+                        <td class="uk-width-small">{{$message->created_at}}</td>
+                    </tr>
                 @endforeach
                 <tr>
                 <form method="post" action="/message" style="width:500px;margin:0 auto;">
@@ -328,6 +435,15 @@
                     <input type="submit">
                     <input type="hidden" name="job_id" value="{{$job->id}}">
                 </form>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 </tr>
                 <tr>
                     <!--ペジネーション-->
@@ -335,6 +451,74 @@
                 </tr>
             </tbody>
         </table>
+        @if($mySubscribe->status == 2)
+        依頼を頼まれた人がまだ納品をしていない場合5
+        <h4>納品</h4>
+        <form method="post" action="/delivery" enctype="multipart/form-data">
+        {{csrf_field()}}
+        <textarea name="body" row="5" style="width:100%;"></textarea>
+        <input type="file" name="file"><br>
+        <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+        <input type="hidden" name="job_id" value="{{$job->id}}">
+        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+        <?php
+            foreach($subscribeCheck as $status => $val) {
+            if($val['status'] == 3){
+                    // statusの値が3の配列のindex番号を探している3
+                    $i = $status;
+                }else{
+                    $i = 0;
+                }
+            };
+        ?>
+        
+        <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+        </form>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        <!--依頼を頼まれた人が納品をした場合-->
+        @elseif($mySubscribe->status == 3)
+        依頼を頼まれた人が納品をした場合3
+        <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+        <h4>再納品</h4>
+        <form method="post" action="/delivery" enctype="multipart/form-data">
+        {{csrf_field()}}
+        <textarea name="body" row="5" style="width:100%;"></textarea>
+        <input type="file" name="file"><br>
+        <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+        <input type="hidden" name="job_id" value="{{$job->id}}">
+        
+            <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+            <?php
+                foreach($subscribeCheck as $status => $val) {
+                if($val['status'] == 3){
+                        // statusの値が3の配列のindex番号を探している4
+                        $i = $status;
+                    }else{
+                        $i = 0;
+                    }
+                };
+            ?>
+        
+        <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+        </form>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        @endif
     <!--メッセージが届いてない場合-->
     @else
     メッセージが届いてない場合
@@ -345,12 +529,125 @@
         <input type="submit">
         <input type="hidden" name="job_id" value="{{$job->id}}">
     </form>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if($mySubscribe->status == 2)
+    依頼を頼まれた人がまだ納品をしていない場合6
+    <h4>納品</h4>
+    <form method="post" action="/delivery" enctype="multipart/form-data">
+    {{csrf_field()}}
+    <textarea name="body" row="5" style="width:100%;"></textarea>
+    <input type="file" name="file"><br>
+    <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+    <input type="hidden" name="job_id" value="{{$job->id}}">
+    
+        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+        <?php
+            foreach($subscribeCheck as $status => $val) {
+            if($val['status'] == 3){
+                    // statusの値が3の配列のindex番号を探している4
+                    $i = $status;
+                }else{
+                    $i = 0;
+                }
+            };
+        ?>
+    
+    <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+    </form>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <!--依頼を頼まれた人が納品をした場合-->
+    @elseif($mySubscribe->status == 3)
+    依頼を頼まれた人が納品をした場合4
+    <p>ただいま{{$job->user->name}}さんが検収しています。</p>
+    <h4>再納品</h4>
+    <form method="post" action="/delivery" enctype="multipart/form-data">
+    {{csrf_field()}}
+    <textarea name="body" row="5" style="width:100%;"></textarea>
+    <input type="file" name="file"><br>
+    <button class="uk-button uk-button-primary uk-button-large" style="border-radius:5px;">納品</button>
+    <input type="hidden" name="job_id" value="{{$job->id}}">
+    
+        <?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+        <?php
+            foreach($subscribeCheck as $status => $val) {
+            if($val['status'] == 3){
+                    // statusの値が3の配列のindex番号を探している4
+                    $i = $status;
+                }else{
+                    $i = 0;
+                }
+            };
+        ?>
+    
+    <input type="hidden" name="mySubscribe_id" value="{{$subscribeCheck[$i]['id']}}">
+    </form>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @endif
     @endif
 @else
 <p>依頼者が決定されたか、検討中です。</p>
 @endif
 </div>
 
+<?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+@if(null !== App\Subscribe::where('job_id', $job->id)->first())
+    <?php
+        foreach($subscribeCheck as $status => $val) {
+        if($val['status'] == 3){
+                // statusの値が3の配列のindex番号を探している5
+                $i = $status;
+            }else{
+                $i = 0;
+            }
+        };
+    ?>
+    @if($subscribeCheck[$i]['status'] == 4 && $subscribeCheck[$i]->user()->first()->id == $user_id)
+    <p>検収が完了しました！</p>
+    @endif
+@endif
+
+<?php $subscribeCheck = App\Subscribe::where('job_id', $job->id)->get(); ?>
+@if(isset($subscribeCheck))
+    @if(null !== App\Subscribe::where('job_id', $job->id)->first())
+        <?php
+            foreach($subscribeCheck as $status => $val) {
+            if($val['status'] == 4){
+                    // statusの値が3の配列のindex番号を探している5
+                    $i = $status;
+                }else{
+                    $i = 0;
+                }
+            };
+        ?>
+        @if($subscribeCheck[$i]['status'] == 4)
+        <p>この依頼はすでに終了しています。</p>
+        @endif
+    @endif
+@endif
 </div>
 <hr class="uk-divider-icon">
 @endsection

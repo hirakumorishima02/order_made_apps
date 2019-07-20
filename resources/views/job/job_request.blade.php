@@ -35,8 +35,18 @@
         <button class="uk-button uk-button-primary uk-button-large">投稿</button>
     </p>
     </fieldset>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </form>
 </div>
+
 @else
 <p><a href="/editProfile">依頼投稿前にプロフィールを登録してください。</a></p>
 @endif

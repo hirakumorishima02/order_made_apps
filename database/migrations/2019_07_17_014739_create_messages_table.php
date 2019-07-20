@@ -27,7 +27,7 @@ class CreateMessagesTable extends Migration
                   
             $table->foreign('job_id')
                   ->references('id')
-                  ->on('users');
+                  ->on('jobs');
         });
     }
 

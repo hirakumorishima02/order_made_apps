@@ -1,0 +1,17 @@
+.hidden{
+    display:none;
+}
+      
+.job-card{
+    overflow:hidden;
+    height:300px;
+}  
+
+.job-card:hover{
+    transition-duration:3s;
+    opacity:0.8;
+}
+
+.job-card a {
+    text-decoration: none;
+}

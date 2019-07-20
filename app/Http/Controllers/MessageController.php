@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\MessageRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Message;
 use App\Job;
 use App\User;
@@ -18,11 +19,11 @@ class MessageController extends Controller
         $this->middleware('auth');
     }
     
-    public function message(Request $request){
+    public function message(MessageRequest $request){
         $message = new Message;
         $message->from_user_id = Auth::user()->id;
-        $message->body = $request->body;
         $message->job_id = $request->job_id;
+        $message->body = $request->body;
         $message->save();
         
         $user_id = Auth::user()->id;
@@ -36,29 +37,62 @@ class MessageController extends Controller
         
     }
     
-    public function delivery(Request $request){
-        $message = new Message;
-        $message->from_user_id = Auth::user()->id;
-        $message->body = $request->body;
-        $message->job_id = $request->job_id;
-        $message->save();
+    public function delivery(MessageRequest $request){
+        if(isset($request->file)){
+                $this->validate($request, [
+                    'file' => [
+                        // アップロードされたファイルであること
+                        'file',
+                    ]
+                ]);
+                if ($request->file('file')->isValid([])) {
+                $path = $request->file->store('file', 's3');
+                Storage::disk('s3')->setVisibility($path, 'public');
+                $url = Storage::disk('s3')->url($path);
+                
+                $message = new Message;
+                $message->from_user_id = Auth::user()->id;
+                $message->body = $request->body;
+                $message->job_id = $request->job_id;
+                $message->file = $url;
+                $message->save();
         
-        $subscribe = Subscribe::where('id',$request->mySubscribe_id)->first();
-        $subscribe->status = 3;
-        $subscribe->save();
+                $subscribe = Subscribe::where('id',$request->mySubscribe_id)->first();
+                $subscribe->status = 3;
+                $subscribe->save();
+                
+                $user_id = Auth::user()->id;
+                $job = Job::find($user_id);
+                $user = User::find($user_id);
+                $userInfo = User_Info::where('user_id',$user_id)->first();
+                $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
+                $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+                $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
+                return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
+            }
+        } else {
+                $message = new Message;
+                $message->from_user_id = Auth::user()->id;
+                $message->body = $request->body;
+                $message->job_id = $request->job_id;
+                $message->save();
         
-        
-        $user_id = Auth::user()->id;
-        $job = Job::find($user_id);
-        $user = User::find($user_id);
-        $userInfo = User_Info::where('user_id',$user_id)->first();
-        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
-        return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
+                $subscribe = Subscribe::where('id',$request->mySubscribe_id)->first();
+                $subscribe->status = 3;
+                $subscribe->save();
+                
+                $user_id = Auth::user()->id;
+                $job = Job::find($user_id);
+                $user = User::find($user_id);
+                $userInfo = User_Info::where('user_id',$user_id)->first();
+                $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
+                $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+                $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
+                return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
+        }
     }
     
-    public function jobComplete(Request $request) {
+    public function jobComplete(MessageRequest $request) {
         $message = new Message;
         $message->from_user_id = Auth::user()->id;
         $message->body = $request->body;
