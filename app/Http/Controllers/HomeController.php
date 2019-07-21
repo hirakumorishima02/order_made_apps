@@ -168,7 +168,7 @@ class HomeController extends Controller
                     // MIMEタイプを指定
                     'mimes:jpeg,png',
                     // 最小縦横20px 最大縦横500px
-                    'dimensions:min_width=20,min_height=20,max_width=500,max_height=500',
+                    'dimensions:min_width=20,min_height=20,max_width=700,max_height=700',
                 ]
             ]);
         if ($request->file('photo')->isValid([])) {
