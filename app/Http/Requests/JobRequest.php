@@ -24,7 +24,7 @@ class JobRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:5|max:20',
+            'title' => 'required|min:5|max:50',
             'money' => 'required|integer',
             'content' => 'required|min:30|max:1000',
             'wish_at' => 'required',
@@ -36,7 +36,7 @@ class JobRequest extends FormRequest
         return [
             'title.required' => 'タイトルを入力してください。',
             'title.min' => 'タイトルは5文字以上で入力してください。',
-            'title.max' => 'タイトルは20文字以下で入力してください。',
+            'title.max' => 'タイトルは50文字以下で入力してください。',
             'money.required' => '報酬を入力してください。',
             'money.integer' => '報酬は数字で入力してください。',
             'content.required' => '本文を入力してください。',

@@ -40,7 +40,7 @@
         </form>
         <form action="/completeRequest" method="post">
             {{ csrf_field() }}
-            <button class="uk-button uk-button-primary uk-button-large" method="post">応募</button>
+            <button class="uk-button uk-button-primary uk-button-large">応募</button>
         </form>
     </div>
     </div>

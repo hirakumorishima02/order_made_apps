@@ -89,7 +89,7 @@ class JobController extends Controller
         }
     }
     
-    public function completeRequest(JobRequest $request) {
+    public function completeRequest(Request $request) {
         if(null != Session::get('job_photo_url')){
             $fileUrl = Session::get('job_photo_url');
             
@@ -97,6 +97,7 @@ class JobController extends Controller
             $job->user_id = Auth::user()->id;
             $job->job_photo = $fileUrl;
             $job->save();
+            
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
             $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
@@ -107,6 +108,7 @@ class JobController extends Controller
             $job = $request->session()->get('job');
             $job->user_id = Auth::user()->id;
             $job->save();
+            
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
             $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
