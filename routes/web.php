@@ -12,8 +12,9 @@
 */
 
 // ユーザー画面・プロフィール画面
-Route::get('/','HomeController@user');
 Route::get('/home', 'HomeController@user')->name('user');
+Route::get('/','HomeController@user');
+
 
 Route::get('/profile/{user_id}','HomeController@profile');
 Route::get('/editProfile','HomeController@editProfile');

@@ -165,6 +165,8 @@
                         <td class="uk-width-small">{{$message->body}}</td>
                         @if(isset($message->file))
                         <td class="uk-width-small"><a href="{{$message->file}}"><span uk-icon="file-text"></span></a></td>
+                        @else
+                        <td></td>
                         @endif
                         <td class="uk-width-small">{{$message->created_at}}</td>
                     </tr>
@@ -424,6 +426,8 @@
                         <td class="uk-width-small">{{$message->body}}</td>
                         @if(isset($message->file))
                         <td class="uk-width-small"><a href="{{$message->file}}"><span uk-icon="file-text"></span></a></td>
+                        @else
+                        <td></td>
                         @endif
                         <td class="uk-width-small">{{$message->created_at}}</td>
                     </tr>
@@ -485,6 +489,7 @@
             @endif
         <!--依頼を頼まれた人が納品をした場合-->
         @elseif($mySubscribe->status == 3)
+        {{$mySubscribe}}
         依頼を頼まれた人が納品をした場合3
         <p>ただいま{{$job->user->name}}さんが検収しています。</p>
         <h4>再納品</h4>

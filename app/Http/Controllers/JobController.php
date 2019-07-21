@@ -26,22 +26,25 @@ class JobController extends Controller
         $userInfo = User_Info::where('user_id',$user_id)->first();
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $mySubscribe = Subscribe::where('job_id',$job_id)->where('user_id',$user_id)->first();
-        
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
         // if(null !==Message::where('job_id',$job_id)->first()){
             $messages = Message::where('job_id',$job_id)->latest()->simplePaginate(5);
         // }
 
-        return view('job.job',compact('job','user','userInfo','user_id','subscribes','my_jobs','mySubscribe','messages'));
+        return view('job.job',compact('job','user','userInfo','user_id','subscribes','my_jobs','mySubscribe','messages','subscribesOver2'));
     }
     
     public function jobRequest(){
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         $user_id = Auth::user()->id;
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $userInfo = User_Info::where('user_id',Auth::user()->id)->first();
-        return view('job.job_request',compact('subscribes','user_id','my_jobs','userInfo'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('job.job_request',compact('subscribes','user_id','my_jobs','userInfo','subscribesOver2'));
     }
     
     public function confirmRequest(JobRequest $request) {
@@ -69,16 +72,20 @@ class JobController extends Controller
     
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-            $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-            return view('job.confirmRequest',compact('job','user_id','subscribes','my_jobs'));
+            $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+            $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                        ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+            return view('job.confirmRequest',compact('job','user_id','subscribes','my_jobs','subscribesOver2'));
         } else {
             $job = new Job($request->except(['job_photo']));
             $request->session()->put('job', $job);
     
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-            $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-            return view('job.confirmRequest',compact('job','user_id','subscribes','my_jobs'));
+            $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+            $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                        ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+            return view('job.confirmRequest',compact('job','user_id','subscribes','my_jobs','subscribesOver2'));
         }
     }
     
@@ -92,16 +99,20 @@ class JobController extends Controller
             $job->save();
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-            $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-            return view('job.completeRequest',compact('user_id','subscribes','my_jobs'));
+            $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+            $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                        ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+            return view('job.completeRequest',compact('user_id','subscribes','my_jobs','subscribesOver2'));
         } else {
             $job = $request->session()->get('job');
             $job->user_id = Auth::user()->id;
             $job->save();
             $user_id = Auth::user()->id;
             $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-            $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-            return view('job.completeRequest',compact('user_id','subscribes','my_jobs'));
+            $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+            $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                        ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+            return view('job.completeRequest',compact('user_id','subscribes','my_jobs','subscribesOver2'));
         }
     }
     
@@ -124,8 +135,10 @@ class JobController extends Controller
         }
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('job.completeRequest',compact('user_id','subscribes','my_jobs'));
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('job.completeRequest',compact('user_id','subscribes','my_jobs','subscribesOver2'));
     }
     
     public function deleteRequest(Request $request) {
@@ -133,11 +146,12 @@ class JobController extends Controller
 
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
-        
-        return redirect('/')->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribes' => $subscribes, 'my_jobs' => $my_jobs] );
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return redirect('/')->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribes' => $subscribes, 'my_jobs' => $my_jobs,'subscribesOver2' => $subscribesOver2] );
     }
     
     
@@ -152,8 +166,9 @@ class JobController extends Controller
             ->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
-
-        return view('job.applicants',compact('user_id','subscribes','my_jobs','userInfo','user','subsc'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('job.applicants',compact('user_id','subscribes','my_jobs','userInfo','user','subsc','subscribesOver2'));
     }
     public function decideApplicant($applicant_id) {
         $subscribe = Subscribe::where('id',$applicant_id)->first();
@@ -162,10 +177,12 @@ class JobController extends Controller
         
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
-        return view('job.decideApplicant',compact('user_id','subscribes','my_jobs','userInfo','user','subsc'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('job.decideApplicant',compact('user_id','subscribes','my_jobs','userInfo','user','subsc','subscribesOver2'));
     }
     
     

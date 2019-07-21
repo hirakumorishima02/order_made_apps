@@ -19,7 +19,7 @@ class SubscribeController extends Controller
         $request->session()->put('subscribe', $subscribe);
         $user_id = Auth::user()->id;
         $job_id = $request->job_id;
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         return view('subscribe.confirmSubscribe',compact('subscribe','user_id','job_id','subscribes','my_jobs'));
     }
@@ -30,7 +30,7 @@ class SubscribeController extends Controller
         $subscribe->job_id = $request->job_id;
         $subscribe->save();
         $user_id = Auth::user()->id;
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
         return view('subscribe.completeSubscribe',compact('user_id','subscribes','my_jobs'));
     }

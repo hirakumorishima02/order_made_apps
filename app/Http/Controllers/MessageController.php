@@ -27,12 +27,6 @@ class MessageController extends Controller
         $message->save();
         
         $user_id = Auth::user()->id;
-        $job = Job::find($user_id);
-        $user = User::find($user_id);
-        $userInfo = User_Info::where('user_id',$user_id)->first();
-        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
         return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
         
     }
@@ -62,12 +56,6 @@ class MessageController extends Controller
                 $subscribe->save();
                 
                 $user_id = Auth::user()->id;
-                $job = Job::find($user_id);
-                $user = User::find($user_id);
-                $userInfo = User_Info::where('user_id',$user_id)->first();
-                $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-                $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-                $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
                 return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
             }
         } else {
@@ -82,12 +70,6 @@ class MessageController extends Controller
                 $subscribe->save();
                 
                 $user_id = Auth::user()->id;
-                $job = Job::find($user_id);
-                $user = User::find($user_id);
-                $userInfo = User_Info::where('user_id',$user_id)->first();
-                $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-                $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-                $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
                 return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
         }
     }
@@ -109,12 +91,6 @@ class MessageController extends Controller
         $portfolio->save();
         
         $user_id = Auth::user()->id;
-        $job = Job::find($user_id);
-        $user = User::find($user_id);
-        $userInfo = User_Info::where('user_id',$user_id)->first();
-        $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        $mySubscribe = Subscribe::where('job_id',$request->job_id)->where('user_id',$user_id)->first();
         return redirect('/job'.'/'.$request->job_id.'/'.$user_id);
     }
 }

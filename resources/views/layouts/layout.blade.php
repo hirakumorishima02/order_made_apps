@@ -4,16 +4,17 @@
     <title>@yield('title')</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--CSSCO-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssco/1.0.0/cssco.css">
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css" />
     <!-- UIkit JS -->
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
     <!--jQuery-->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
     <!--Datepicker用のcdn-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.1/js/components/datepicker.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.1/js/components/datepicker.js"></script>-->
     <link href="{{ secure_asset('css/styles.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -40,7 +41,7 @@
                     <a href="#">契約中の依頼</a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
-                            @foreach($subscribes as $subscribe)
+                            @foreach($subscribesOver2 as $subscribe)
                             <li><a href="/job/{{$subscribe->job_id}}/{{$subscribe->job->user_id}}">{{$subscribe->job->title}}</a></li>
                             @endforeach
                         </ul>
@@ -99,8 +100,16 @@
 </div>
 </footer>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
 <script>
 
+    
+	$('#datepicker').datepicker();
+	$('#datepicker').datepicker("option", "dateFormat", 'yy-mm-dd' );
+	
+	
 // followボタンを押すと、followが消えたり出てきたり、という機能
 // 'use strict';
 // var target = document.getElementById("hidden");

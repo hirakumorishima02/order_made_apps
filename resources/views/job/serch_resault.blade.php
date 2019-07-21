@@ -13,7 +13,6 @@
         </tr>
     </thead>
     <tbody>
-        {{$jobs}}
         @foreach($jobs as $job)
         <tr>
             <td><a href="/job/{{$job->id}}/{{$job->user_id}}">{{$job->title}}</a></td>

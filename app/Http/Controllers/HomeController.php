@@ -55,9 +55,11 @@ class HomeController extends Controller
         $user_id = Auth::user()->id;
         $user = Auth::user();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $my_follows = Follow::where('user_id',Auth::user()->id)->get();
-        return view('user.user',compact('jobList1','jobList2','jobList3','jobList4','user_id','subscribes','my_jobs','user','my_follows'));
+        return view('user.user',compact('jobList1','jobList2','jobList3','jobList4','user_id','subscribes','my_jobs','user','my_follows','subscribesOver2'));
     }
     
     public function profile($user_id) {
@@ -67,9 +69,11 @@ class HomeController extends Controller
         $user_id = Auth::user()->id;
         $portfolios = Portfolio::where('user_id',$user_id)->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
         $follow = Follow::where('follow_user_id', $thisUser->id)->first();
-        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs','thisUser','follow'));
+        return view('user.profile',compact('user','userInfo','user_id','portfolios','subscribes','my_jobs','thisUser','follow','subscribesOver2'));
     }
     
     public function editProfile(){
@@ -77,8 +81,10 @@ class HomeController extends Controller
         $user = User::where('id','=', Auth::user()->id)->first();
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
-        return view('user.editProfile',compact('user','userInfo','user_id','subscribes','my_jobs'));
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('user.editProfile',compact('user','userInfo','user_id','subscribes','my_jobs','subscribesOver2'));
     }
     
     public function addProfile(ProfileRequest $request){
@@ -210,11 +216,12 @@ class HomeController extends Controller
         
         $user_id = Auth::user()->id;
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        $my_jobs = Job::where('user_id',Auth::user()->id)->get();
+        $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
-        
-        return view ('job.serch_resault',compact('jobs','keyword','user_id','user_id','subscribes','my_jobs','userInfo','user'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view ('job.serch_resault',compact('jobs','keyword','user_id','user_id','subscribes','my_jobs','userInfo','user','subscribesOver2'));
     }
     
     public function follow(Request $request) {

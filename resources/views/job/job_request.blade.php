@@ -24,7 +24,7 @@
             <textarea class="uk-textarea" rows="5" name="content" placeholder="依頼の詳細"></textarea>
         </div>
         <div class="uk-margin">
-            <input type="text" data-uk-datepicker="{format:'YYYY.MM.DD'}" placeholder="希望納期" name="wish_at">
+            <input type="text" placeholder="希望納期" name="wish_at" id="datepicker">
         </div>
         <!--参考画像-->
         <div class="uk-margin">
