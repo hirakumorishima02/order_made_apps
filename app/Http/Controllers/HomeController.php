@@ -95,10 +95,6 @@ class HomeController extends Controller
                     'file',
                     // 画像ファイルであること
                     'image',
-                    // MIMEタイプを指定
-                    'mimes:jpeg,png',
-                    // 最小縦横20px 最大縦横500px
-                    'dimensions:min_width=20,min_height=20,max_width=500,max_height=500',
                 ]
             ]);
                 if ($request->file('photo')->isValid([])) {
