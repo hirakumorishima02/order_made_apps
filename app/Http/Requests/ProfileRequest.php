@@ -33,7 +33,7 @@ class ProfileRequest extends FormRequest
     public function messages(){
         return [
             'profile.required'  => 'プロフィールを入力してください。',
-            'profile.min' => 'プロフィールは3文字以上記入してください。',
+            'profile.min' => 'プロフィールは10文字以上記入してください。',
             'profile.max' => 'プロフィールは最大1,000文字以内で記入してください。',
             'github.alpha_dash' => 'GitHubアカウントは英数文字、「-」、「_」のみで入力してください。',
             'url.url' => 'ポートフォリオがURL形式ではありません。',
