@@ -125,7 +125,9 @@ class HomeController extends Controller
                 $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
                 $user = User::where('id','=', Auth::user()->id)->first();
                 $user_id = Auth::user()->id;
-                return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id] );
+                $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                            ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+                return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribesOver2' => $subscribesOver2] );
                 
                 } else {
                     return redirect()
@@ -149,7 +151,9 @@ class HomeController extends Controller
                 $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
                 $user = User::where('id','=', Auth::user()->id)->first();
                 $user_id = Auth::user()->id;
-                return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id] );
+                $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                            ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+                return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribesOver2' => $subscribesOver2] );
             }
     }
     
@@ -167,10 +171,10 @@ class HomeController extends Controller
                     'dimensions:min_width=20,min_height=20,max_width=500,max_height=500',
                 ]
             ]);
-            if ($request->file('photo')->isValid([])) {
-            $path = $request->photo->store('photo', 's3');
-            Storage::disk('s3')->setVisibility($path, 'public');
-            $url = Storage::disk('s3')->url($path);
+        if ($request->file('photo')->isValid([])) {
+        $path = $request->photo->store('photo', 's3');
+        Storage::disk('s3')->setVisibility($path, 'public');
+        $url = Storage::disk('s3')->url($path);
         }
         
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
@@ -192,8 +196,10 @@ class HomeController extends Controller
         $userInfo = User_Info::where('user_id','=', Auth::user()->id)->first();
         $user = User::where('id','=', Auth::user()->id)->first();
         $user_id = Auth::user()->id;
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id, 'subscribesOver2' => $subscribesOver2] );
         
-        return redirect('/profile/'.$user_id)->with( ['user' => $user,'userInfo' => $userInfo, 'user_id' => $user_id] );
         } else {
             return redirect()
                 ->back()
