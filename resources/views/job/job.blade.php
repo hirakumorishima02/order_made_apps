@@ -114,7 +114,7 @@
                 </div>
                 <!--報酬-->
                 <div class="uk-margin">
-                    <input class="uk-input" type="text" name="money" placeholder="希望契約金額" value="{{$job->money}}">
+                    <input class="uk-input" type="text" name="money" placeholder="希望契約金額" value="{{floor($job->money)}}">
                 </div>
                 <!--依頼の詳細-->
                 <div class="uk-margin">
