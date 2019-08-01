@@ -70,7 +70,7 @@
             </tbody>
         </table>
     </div>
-    @if($user->id == $user_id)
+    @if($thisUser->id == $user_id)
     <a href="/editProfile"><button class="uk-button uk-button-primary">情報の登録</button></a>
     @endif
 @endsection

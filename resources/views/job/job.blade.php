@@ -25,8 +25,8 @@
             <div class="uk-card-body">
                 <p>クライアント情報</p>
                 <h3 class="uk-card-title" style="margin-top:20px;">{{$job->user->name}}</h3>
-                @if(isset($job->user->userInfosToUser()->profile))
-                <p>{{$job->user->userInfosToUser()->profile}}</p>
+                @if(isset($job->user()->first()->userInfosToUser()->first()->profile))
+                <p>{{$job->user()->first()->userInfosToUser()->first()->profile}}</p>
                 @else
                 <p></p>
                 @endif

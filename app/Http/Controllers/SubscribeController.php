@@ -21,7 +21,9 @@ class SubscribeController extends Controller
         $job_id = $request->job_id;
         $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        return view('subscribe.confirmSubscribe',compact('subscribe','user_id','job_id','subscribes','my_jobs'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('subscribe.confirmSubscribe',compact('subscribe','user_id','job_id','subscribes','my_jobs','subscribesOver2'));
     }
     
     public function completeSubscribe(Request $request) {
@@ -32,14 +34,18 @@ class SubscribeController extends Controller
         $user_id = Auth::user()->id;
         $my_jobs = Job::where('user_id',Auth::user()->id)->whereDoesntHave('subscribesToJob', function($query){$query->where('status', 4);})->get();
         $subscribes = Subscribe::where('user_id',Auth::user()->id)->get();
-        return view('subscribe.completeSubscribe',compact('user_id','subscribes','my_jobs'));
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return view('subscribe.completeSubscribe',compact('user_id','subscribes','my_jobs','subscribesOver2'));
     }
     
     public function backSubscribe(Request $request) {
         $job_id = $request->job_id;
         $user_id = $request->user_id;
         $data = $request->session()->reflash();
-        return redirect()->back()->with(['job_id'=>$job_id,'user_id'=>$user_id,'data'=>$data]);
+        $subscribesOver2 = Subscribe::where('user_id',Auth::user()->id)->where('status',2)
+                                    ->orwhere('user_id',Auth::user()->id)->where('status',3)->get();
+        return redirect()->back()->with(['job_id'=>$job_id,'user_id'=>$user_id,'data'=>$data ,'subscribesOver2'=>$subscribesOver2]);
     }
     
 }

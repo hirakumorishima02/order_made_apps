@@ -38,8 +38,8 @@
     <div class="uk-child-width-expand@s uk-text-center uk-animation-slide-bottom card-style" uk-grid="parallax: 150">
     @foreach($jobList3 as $job)
     <div>
-        <div class="uk-card uk-card-default job-card cssco cssco--hb1">
-            <div class="uk-card-media-top uk-height-small"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
+        <div class="uk-card uk-card-default job-card">
+            <div class="uk-card-media-top uk-height-small cssco cssco--hb1"><img src="{{$job->user()->first()->userInfosToUser()->first()->photo}}"></div>
             <a href="/job/{{$job->id}}/{{$job->user_id}}">
                 <div class="uk-card uk-card-default uk-card-body uk-grid-margin">
                     <h3 class="uk-card-title" style="overflow:scroll;height:100px;">{{ $job->title }}</h3>
